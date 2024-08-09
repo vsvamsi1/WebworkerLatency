@@ -1,50 +1,42 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React,{useEffect} from 'react';
+import { useDispatch } from 'react-redux';
+import { REDUX_ACTIONS } from '../saga/allWorkers';
 
-const applyFilter = searchTerm => article =>
-  article.title.toLowerCase().includes(searchTerm.toLowerCase());
 
-const App = ({ articles, searchTerm, onSearch }) =>
-  <div>
-    <Search value={searchTerm} onSearch={onSearch}>
-      <p>Search</p>
-    </Search>
+const App = () =>{
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch({ type: REDUX_ACTIONS.APP_START });
+  }, [dispatch]);
+ return ( 
+ <div>
+    <button onClick={()=>{
+        dispatch({ type: REDUX_ACTIONS.WORKER1 });
 
-    <Articles articles={articles.filter(applyFilter(searchTerm))} />
+      }}>
+      Trigger Worker 1
+    </button>
+    <button onClick={()=>{
+        dispatch({ type: REDUX_ACTIONS.WORKER2 });
 
-    <p>Take the journey to learn Redux in <a href={'https://roadtoreact.com/'}>Taming the State in React</a></p>
-  </div>
+      }}>
+      Trigger Worker 2
+    </button>
+    <div/>
+    <button onClick={()=>{
+         console.time("makeMainThreadBusy");
+         let i = 0;
+         while(i<4000000000){
+             i++;
+         }
+         console.timeEnd("makeMainThreadBusy");
 
-const Search = ({ value, onSearch, children }) =>
-  <div>
-    {children} <input
-      value={value}
-      onChange={event => onSearch(event.target.value)}
-      type="text"
-    />
-  </div>
+      }}>
+      Make Main Thread Busy
+      </button>
+  </div>)
+}
 
-const Articles = ({ articles }) =>
-  <ul>
-    {articles.map(article =>
-      <li key={article.id}>
-        <Article article={article} />
-      </li>
-    )}
-  </ul>
 
-const Article = ({ article }) =>
-  <a href={article.url}>{article.title}</a>
 
-// connecting view layer to state layer with react-redux
-
-const mapStateToProps = state => ({
-  articles: state.articlesState.articles,
-  searchTerm: state.searchState.searchTerm,
-});
-
-const mapDispatchToProps = dispatch => ({
-  onSearch: searchTerm => dispatch({ type: 'SEARCH_SET', searchTerm }),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
