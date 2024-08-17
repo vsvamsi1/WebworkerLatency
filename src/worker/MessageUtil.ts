@@ -7,6 +7,11 @@
 export function sendMessage(
   this: Worker | typeof globalThis,
   message: any,
+  transferable?: any
 ) {
+  if (transferable) {
+    this.postMessage(message, { targetOrigin: "*", transfer: [transferable] });
+    return;
+  }
   this.postMessage(message);
 }

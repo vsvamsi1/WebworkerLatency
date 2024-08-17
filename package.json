@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "http-proxy-middleware": "^3.0.0",
     "lodash": "4.17.21",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
@@ -13,7 +14,7 @@
     "typescript": "^5.5.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "export NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom --passWithNoTests",
     "eject": "react-scripts eject"

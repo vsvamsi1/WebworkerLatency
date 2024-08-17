@@ -164,7 +164,7 @@ export class GracefulWorkerService {
    */
   // TODO: Fix this the next time the file is edited
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  *request(method: string, data = {}): any {
+  *request(method: string, data = {}, transfer:any): any {
     yield this.ready(true);
     // Impossible case, but helps avoid `?` later in code and makes it clearer.
     if (!this._Worker) return;
@@ -182,13 +182,13 @@ export class GracefulWorkerService {
     };
 
     try {
-      console.time("FULL_EVAL_"+ messageId);
-
+      console.time("FULL_EVAL_" + messageId);
+      
       sendMessage.call(this._Worker, {
         messageType: "REQUEST",
         body: body,
         messageId,
-      });
+      }, transfer);
 
       // The `this._broker` method is listening to events and will pass response to us over this channel.
       const response = yield take(ch);
